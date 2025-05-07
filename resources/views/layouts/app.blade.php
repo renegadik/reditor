@@ -9,7 +9,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
         <a class="navbar-brand" href="{{ route('home') }}">Reditor</a>
         <div class="ms-auto">
-            <a href="{{ route('create') }}" class="btn btn-success">+ new key</a>
+            <a href="{{ route('create') }}" class="btn btn-success"> {{ __('new_key') }} </a>
+            <a href="{{ route('settings') }}" class="btn btn-secondary">{{ __('settings') }}</a>
         </div>
     </nav>
 

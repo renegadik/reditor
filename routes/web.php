@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RedisController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/', [RedisController::class, 'home'])->name('home');
 
@@ -13,3 +14,5 @@ Route::get('/key/{key}', [RedisController::class, 'show'])->name('show');
 
 Route::post('/delete', [RedisController::class, 'delete'])->name('delete');
 
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');

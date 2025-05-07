@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>keys list</h2>
+    <h2>{{ __('keys_list_title') }}</h2>
 
     @if(count($keys) === 0)
-        <div class="alert alert-warning">no keys in redis</div>
+        <div class="alert alert-warning">{{ __('no_keyses_alert') }}</div>
     @else
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>key</th>
-                    <th>type</th>
-                    <th>ttl</th>
-                    <th>data</th>
-                    <th>action</th>
+                    <th>{{ __('key') }}</th>
+                    <th>{{ __('type') }}</th>
+                    <th>{{ __('ttl') }}</th>
+                    <th>{{ __('data') }}</th>
+                    <th>{{ __('actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,11 +24,11 @@
                         <td>{{ $key['ttl'] }}</td>
                         <td>{{ $key['value'] }}</td>
                         <td>
-                            <a href="{{ route('show', ['key' => urlencode($key['key'])]) }}" class="btn btn-sm btn-primary">open</a>
+                            <a href="{{ route('show', ['key' => urlencode($key['key'])]) }}" class="btn btn-sm btn-primary">{{ __('open_button') }}</a>
                             <form method="POST" action="{{ route('delete') }}" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="key" value="{{ $key['key'] }}">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить?')">delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('{{ __('ask_delete') }}')">{{ __('delete') }}</button>
                             </form>
                         </td>
                     </tr>

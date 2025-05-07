@@ -1,0 +1,31 @@
+{
+    "new_key": "+ Новый ключ",
+    "settings": "Настройки",
+    "create_key_title": "Создание нового ключа",
+    "type": "Тип данных",
+    "string": "Строка",
+    "list": "Список",
+    "set": "Множество",
+    "hash": "Хэш-таблица",
+    "zset": "Отсортированное множество",
+    "value": "Значение",
+
+    "save_button": "Сохранить",
+    "create_button": "Создать",
+    "back_button": "Назад",
+    "open_button": "Открыть",
+
+    "key": "Ключ",
+    "ttl": "Время жизни (TTL)",
+    "data": "Данные",
+    "actions": "Действия",
+    "delete": "Удалить",
+    "ask_delete": "Удалить этот ключ? Вы уверены?",
+
+    "keys_list_title": "Ключи Redis",
+    "no_keyses_alert": "В Redis нет ни одного ключа",
+
+    "settings_title": "Настройки Reditor",
+    "settings_language_title": "Язык интерфейса",
+    "settings_language_message": "Язык обновлён!"
+}

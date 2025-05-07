@@ -1,0 +1,31 @@
+{
+    "new_key": "+ New Key",
+    "settings": "Settings",
+    "create_key_title": "Create New Key",
+    "type": "Data Type",
+    "string": "String",
+    "list": "List",
+    "set": "Set",
+    "hash": "Hash Map",
+    "zset": "Sorted Set",
+    "value": "Value",
+
+    "save_button": "Save",
+    "create_button": "Create",
+    "back_button": "Back",
+    "open_button": "Open",
+
+    "key": "Key",
+    "ttl": "Time to Live (TTL)",
+    "data": "Data",
+    "actions": "Actions",
+    "delete": "Delete",
+    "ask_delete": "Are you sure you want to delete this key?",
+
+    "keys_list_title": "Redis Keys",
+    "no_keyses_alert": "No keys found in Redis",
+
+    "settings_title": "Reditor Settings",
+    "settings_language_title": "Interface Language",
+    "settings_language_message": "The language has been updated!"
+}
