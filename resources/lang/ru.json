@@ -27,5 +27,18 @@
 
     "settings_title": "Настройки Reditor",
     "settings_language_title": "Язык интерфейса",
-    "settings_language_message": "Язык обновлён!"
+    "settings_language_message": "Язык обновлён!",
+
+    "new_value": "Новое значение",
+    "new_key_title": "Новый ключ",
+
+    "add_field": "Добавить поле",
+
+    "have_no_key": "Ключ не найден",
+    "key_is_update": "Ключ обновлён",
+
+    "value_is_deleted": "Элемент удалён",
+    "value_is_added": "Элемент добавлен"
+
+    
 }

@@ -55,5 +55,64 @@ class RedisController extends Controller
         return redirect()->route('home');
     }
 
+    public function update_key(Request $request) {
+        $key = $request->input('key');
+        $value = $request->input('value');
+
+        if (!Redis::exists($key)) {
+            return redirect()->route('home')->with('error', __('have_no_key'));
+        }
+
+        $type = Redis::type($key);
+
+        if ($type === 1) {
+            Redis::set($key, $value);
+
+        } elseif (in_array($type, [2, 3, 4, 5]) && is_array($value)) {
+            Redis::del($key); 
+
+            foreach ($value as $k => $v) {
+                if ($type === 2) {
+                    Redis::rpush($key, $v);
+                } elseif ($type === 3) {
+                    Redis::sadd($key, $v);
+                } elseif ($type === 4) { 
+                    Redis::zadd($key, 0, $v);
+                } elseif ($type === 5) { 
+                    Redis::hset($key, $k, $v);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', __('key_is_update'));
+    }
+
+    public function delete_subkey(Request $request) {
+        $request->validate([
+            'key' => 'required|string',
+            'sub_key' => 'required|string',
+        ]);
+
+        $key = $request->input('key');
+        $subKey = $request->input('sub_key');
+        $subvalue = $request->input('sub_value');
+        $type = Redis::type($key);
+
+        $this->redis->delete_subkey($key, $type, $subvalue, $subKey);
+
+        return redirect()->back()->with('success', __('value_is_deleted'));
+    }
+
+    public function add_subkey(Request $request) {
+        $key = $request->input('key');
+        $new_key = $request->input('new_key');
+        $new_value = $request->input('new_value');
+
+        $type = Redis::type($key);
+
+        $this->redis->add_subkey($type, $key, $new_key, $new_value);
+    
+        return redirect()->back()->with('success', __('value_is_added'));
+    }
 
 }

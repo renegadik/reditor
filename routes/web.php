@@ -16,3 +16,7 @@ Route::post('/delete', [RedisController::class, 'delete'])->name('delete');
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
+
+Route::post('/update_key', [RedisController::class, 'update_key'])->name('update_key');
+Route::post('/delete_subkey', [RedisController::class, 'delete_subkey'])->name('delete_subkey');
+Route::post('/add-subkey', [RedisController::class, 'add_subkey'])->name('add_subkey');

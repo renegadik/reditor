@@ -27,5 +27,18 @@
 
     "settings_title": "Reditor Settings",
     "settings_language_title": "Interface Language",
-    "settings_language_message": "The language has been updated!"
+    "settings_language_message": "The language has been updated!",
+
+    "new_value": "New value",
+    "new_key_title": "New key",
+
+    "add_field": "Add field",
+
+    "have_no_key": "Key not found",
+    "key_is_update": "Key updated",
+
+    "value_is_deleted": "Element deleted",
+    "value_is_added": "Element added"
+
+
 }

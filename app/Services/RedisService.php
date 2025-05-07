@@ -79,4 +79,55 @@ class RedisService {
     public function delete_key($key) {
         return Redis::del($key);
     }
+
+    public function delete_subkey($key, $type, $subvalue, $subKey) {
+        switch ($type) {
+            case 3:
+                $list = Redis::lrange($key, 0, -1);
+            
+                if (isset($list[$subKey])) {
+                    unset($list[$subKey]);
+                    Redis::del($key);
+                    foreach (array_values($list) as $item) {
+                        Redis::rpush($key, $item);
+                    }
+                }
+                break;
+
+            case 2:
+                Redis::srem($key, $subvalue);
+                break;
+
+            case 4:
+                Redis::zrem($key, $subKey);
+                break;
+
+            case 5: 
+                Redis::hdel($key, $subKey);
+                break;
+        }
+    }
+
+    public function add_subkey($type, $key, $new_key, $new_value) {
+        switch ($type) {
+            case 3: 
+                $a = Redis::rpush($key, $new_value);
+                break;
+
+            case 2: 
+                Redis::sadd($key, $new_value);
+                break;
+
+            case 4:
+                Redis::zadd($key, 0, $new_value);
+                break;
+
+            case 5:
+                Redis::hset($key, $new_key, $new_value);
+                break;
+
+            default:
+                return redirect()->back()->with('error', 'Тип ключа не поддерживается для добавления');
+        }
+    }
 }
