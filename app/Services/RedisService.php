@@ -55,20 +55,23 @@ class RedisService {
     }
 
     public function create_key($type, $key, $value) {
-
-        if (in_array($type, ['list', 'set', 'zset', 'hash'])) {
+        if (empty($value)) {
+            return;
+        }
+        
+        if (in_array($type, [1, 2, 3, 4, 5])) {
             $value = json_decode($value, true);
         }
 
-        if ($type === 'string') {
+        if ($type === 1) {
             Redis::set($key, $value);
-        } elseif ($type === 'list') {
+        } elseif ($type === 3) {
             Redis::rpush($key, ...$value);
-        } elseif ($type === 'set') {
+        } elseif ($type === 2) {
             Redis::sadd($key, ...$value);
-        } elseif ($type === 'hash') {
+        } elseif ($type === 4) {
             Redis::hmset($key, $value);
-        } elseif ($type === 'zset') {
+        } elseif ($type === 5) {
             foreach ($value as $member => $score) {
                 Redis::zadd($key, $score, $member);
             }
@@ -104,7 +107,7 @@ class RedisService {
             $list = $this->get_by_key($key)['value'];
             unset($list[$sub_key]);
             $this->delete_key($key);
-            $this->create_key('list', $key, json_encode($list));
+            $this->create_key(3, $key, json_encode($list));
         } 
         elseif ($type === 4) {
             Redis::zrem($key, $sub_key);
@@ -116,27 +119,16 @@ class RedisService {
 
     public function update_key($key, $value) {
         $type = Redis::type($key);
-
         if ($type === 1) {
             Redis::set($key, $value);
-        } 
-        elseif (is_array($value) && in_array($type, [2, 3, 4, 5])) {
-            Redis::del($key); 
-            foreach ($value as $k => $v) {
-                if ($type === 3) {
-                    Redis::rpush($key, $v);
-                }
-                 elseif ($type === 2) {
-                    Redis::sadd($key, $v);
-                } 
-                elseif ($type === 4) { 
-                    Redis::zadd($key, 0, $v);
-                } 
-                elseif ($type === 5) { 
-                    Redis::hset($key, $k, $v);
-                }
-            }
+        } else {
+            $array = $this->get_by_key($key)['value'];
+            $index = array_key_first($value);
+            $array[$index] = $value[$index];
+            $this->delete_key($key);
+            $this->create_key($type, $key, json_encode($array));
         }
+    
     }
 
 

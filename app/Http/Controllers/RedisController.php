@@ -59,10 +59,6 @@ class RedisController extends Controller
         $key = $request->input('key');
         $value = $request->input('value');
 
-        if (!Redis::exists($key)) {
-            return redirect()->route('home')->with('error', __('have_no_key'));
-        }
-
         $this->redis->update_key($key, $value);
 
         return redirect()->back()->with('success', __('key_is_update'));

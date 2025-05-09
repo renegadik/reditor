@@ -23,11 +23,11 @@
         <div class="mb-3">
             <label class="form-label">{{ __('type') }}</label>
             <select name="type" class="form-select" required>
-                <option value="string">{{ __('string') }}</option>
-                <option value="list"> {{ __('list') }} | ["test", "asd", "asd"]</option>
-                <option value="set"> {{ __('set') }} | ["test", "asd", "asd"]</option>
-                <option value="hash"> {{ __('hash') }} | { "username": "test", "role": "asd", "active": true } </option>
-                <option value="zset"> {{ __('zset') }} | { "asd1": 100, "asd2": 50, "asd3": 75 }</option>
+                <option value="1">{{ __('string') }}</option>
+                <option value="3"> {{ __('list') }} | ["test", "asd", "asd"]</option>
+                <option value="2"> {{ __('set') }} | ["test", "asd", "asd"]</option>
+                <option value="4"> {{ __('hash') }} | { "username": "test", "role": "asd", "active": true } </option>
+                <option value="5"> {{ __('zset') }} | { "asd1": 100, "asd2": 50, "asd3": 75 }</option>
             </select>
         </div>
 
