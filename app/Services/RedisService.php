@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Request;
 
 class RedisService {
 
@@ -34,7 +35,7 @@ class RedisService {
             'type' => $this->get_type_name($type) ?? 'unknown',
             'type_id' => $type,
             'value' => $value,
-            'ttl' => $ttl == -1 ? 'entiti' : $ttl,
+            'ttl' => $ttl == -1 ? __('infinity') : $ttl,
         ];
 
         return $data;
@@ -47,36 +48,13 @@ class RedisService {
         foreach ($all_keys as $key) {
             $temp_data = $this->get_by_key($key);
             if (!is_string($temp_data['value'])) {
-                $temp_data['value'] = 'array';
+                $temp_data['value'] = json_encode($temp_data['value'], JSON_UNESCAPED_UNICODE);
             }
-            $data[] = $temp_data;
+            if ($temp_data['key'] != 'reditor_settings') {
+                $data[] = $temp_data;
+            }
         }
         return $data;
-    }
-
-    public function create_key($type, $key, $value) {
-        if (empty($value)) {
-            return;
-        }
-        
-        if (in_array($type, [1, 2, 3, 4, 5])) {
-            $value = json_decode($value, true);
-        }
-
-        if ($type === 1) {
-            Redis::set($key, $value);
-        } elseif ($type === 3) {
-            Redis::rpush($key, ...$value);
-        } elseif ($type === 2) {
-            Redis::sadd($key, ...$value);
-        } elseif ($type === 4) {
-            Redis::hmset($key, $value);
-        } elseif ($type === 5) {
-            foreach ($value as $member => $score) {
-                Redis::zadd($key, $score, $member);
-            }
-        }
-        return true;
     }
 
     public function delete_key($key) {
@@ -107,7 +85,7 @@ class RedisService {
             $list = $this->get_by_key($key)['value'];
             unset($list[$sub_key]);
             $this->delete_key($key);
-            $this->create_key(3, $key, json_encode($list));
+            $this->create_key_for_update(3, $key, $list);
         } 
         elseif ($type === 4) {
             Redis::zrem($key, $sub_key);
@@ -126,11 +104,66 @@ class RedisService {
             $index = array_key_first($value);
             $array[$index] = $value[$index];
             $this->delete_key($key);
-            $this->create_key($type, $key, json_encode($array));
+            $this->create_key_for_update($type, $key, $array);
         }
-    
     }
 
+    public function create_key_for_update($type, $key, $value) {
+        if (empty($value)) {
+            return;
+        }
 
+        if ($type === 1) {
+            Redis::set($key, $value);
+        } elseif ($type === 3) {
+            Redis::rpush($key, ...$value);
+        } elseif ($type === 2) {
+            Redis::sadd($key, ...$value);
+        } elseif ($type === 4) {
+            foreach ($value as $member => $score) {
+                Redis::zadd($key, $score, $member);
+            }
+        } elseif ($type === 5) {
+            Redis::hmset($key, $value);
+        }
+        return true;
+    }
+
+    public function create_key(Request $request, $type, $key) {
+        if ($type === 1) {
+            $request->validate(['value' => 'required|string']);
+            Redis::set($key, $request->input('value'));
+        }
+        elseif ($type === 2) {
+            $request->validate(['fields' => 'required|array']);
+            Redis::sadd($key, ...$request->input('fields'));
+        } 
+        elseif ($type === 3) {
+            $request->validate(['fields' => 'required|array']);
+            Redis::rpush($key, ...$request->input('fields'));
+        }
+        elseif ($type === 4) {
+            $request->validate([
+                'fields' => 'required|array',
+                'fields.*.key' => 'required|string',
+                'fields.*.value' => 'required|numeric',
+            ]);
+            foreach ($request->input('fields') as $pair) {
+                Redis::zadd($key, $pair['value'], $pair['key']);
+            }
+        }
+        elseif ($type === 5) {
+            $request->validate([
+                'fields' => 'required|array',
+                'fields.*.key' => 'required|string',
+                'fields.*.value' => 'required',
+            ]);
+            $fields = [];
+            foreach ($request->input('fields') as $pair) {
+                $fields[$pair['key']] = $pair['value'];
+            }
+            Redis::hmset($key, $fields);
+        }
+    }
 
 }

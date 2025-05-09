@@ -30,19 +30,18 @@ class RedisController extends Controller
 
     public function store(Request $request) {
         $validated = $request->validate([
-            'key'   => 'required|string',
-            'type'  => 'required|string|in:string,list,set,hash,zset',
-            'value' => 'required',
+            'type' => 'required|in:1,2,3,4,5', // string, set, list, hash, zset
+            'key' =>  'required|string',
         ]);
 
         $key = $validated['key'];
-        $type = $validated['type'];
-        $value = $validated['value'];
+        $type = (int)$validated['type'];
 
-        $this->redis->create_key($type, $key, $value);
-
-        return redirect()->route('home');
+        $this->redis->create_key($request, $type, $key);
+    
+        return redirect()->route('home')->with('success', __('key_is_created'));
     }
+    
 
     public function delete(Request $request) {
         $validated = $request->validate([
@@ -71,11 +70,11 @@ class RedisController extends Controller
         ]);
 
         $key = $request->input('key');
-        $subKey = $request->input('sub_key');
-        $subvalue = $request->input('sub_value');
+        $sub_key = $request->input('sub_key');
+        $sub_value = $request->input('sub_value');
         $type = Redis::type($key);
 
-        $this->redis->delete_subkey($key, $type, $subvalue, $subKey);
+        $this->redis->delete_subkey($key, $type, $sub_value, $sub_key);
 
         return redirect()->back()->with('success', __('value_is_deleted'));
     }

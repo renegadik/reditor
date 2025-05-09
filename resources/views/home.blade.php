@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@php use Illuminate\Support\Str; @endphp
 
 @section('content')
     <h2>{{ __('keys_list_title') }}</h2>
@@ -11,8 +12,8 @@
                 <tr>
                     <th>{{ __('key') }}</th>
                     <th>{{ __('type') }}</th>
-                    <th>{{ __('ttl') }}</th>
                     <th>{{ __('data') }}</th>
+                    <th>{{ __('ttl') }}</th>
                     <th>{{ __('actions') }}</th>
                 </tr>
             </thead>
@@ -21,8 +22,8 @@
                     <tr>
                         <td>{{ $key['key'] }}</td>
                         <td>{{ $key['type'] }}</td>
+                        <td>{{ Str::limit($key['value'], 30) }}</td>
                         <td>{{ $key['ttl'] }}</td>
-                        <td>{{ $key['value'] }}</td>
                         <td>
                             <a href="{{ route('show', ['key' => urlencode($key['key'])]) }}" class="btn btn-sm btn-primary">{{ __('open_button') }}</a>
                             <form method="POST" action="{{ route('delete') }}" class="d-inline">

@@ -16,21 +16,21 @@
     <p><strong>{{ __('ttl') }}:</strong> {{ $ttl }}</p>
 
     @if (is_string($value))
-        <form method="POST" action="{{ route('update_key') }}">
-            @csrf
-            <input type="hidden" name="key" value="{{ $key }}">
-            <div id="string-view" ondblclick="editString()" class="border p-3 rounded bg-white cursor-pointer">
-                <span id="string-value">{{ $value }}</span>
-            </div>
-            <div id="string-edit" style="display: none; position: relative;" class="mt-3">
-                <input type="text" name="value" id="string-input" class="form-control pe-5" value="{{ $value }}"
-                       onkeydown="submitOnEnter(event)">
-                <button type="submit" class="btn btn-primary"
-                        style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%);">
-                        {{ __('save_button') }}
-                </button>
-            </div>
-        </form>
+    <form method="POST" action="{{ route('update_key') }}">
+        @csrf
+        <input type="hidden" name="key" value="{{ $key }}">
+
+        <div id="string-view" ondblclick="editString()" class="border p-3 rounded bg-white cursor-pointer" style="white-space: pre-wrap;">
+            <span id="string-value">{{ $value }}</span>
+        </div>
+
+        <div id="string-edit" style="display: none; position: relative;" class="mt-3">
+            <textarea name="value" id="string-input" class="form-control pe-5" style="min-height: 150px;" onkeydown="submitOnEnter(event)">{{ is_array(json_decode($value, true)) ? json_encode(json_decode($value, true), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $value }}</textarea>
+            <button type="submit" class="btn btn-primary" style="position: absolute; right: 0px; top: 0;">
+                {{ __('save_button') }}
+            </button>
+        </div>
+    </form>
 
     @elseif (is_array($value))
         <div style="position: relative;">

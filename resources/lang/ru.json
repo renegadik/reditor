@@ -38,7 +38,9 @@
     "key_is_update": "Ключ обновлён",
 
     "value_is_deleted": "Элемент удалён",
-    "value_is_added": "Элемент добавлен"
+    "value_is_added": "Элемент добавлен",
+
+    "infinity": "Бесконечно"
 
     
 }
