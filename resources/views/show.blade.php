@@ -49,19 +49,22 @@
                     <tbody id="data-table-body">
                         @foreach ($value as $k => $v)
                             <tr>
-                                <td>{{ $k }}</td>
+                                <td>{{ $k }}</td> 
                                 <td ondblclick="editCell('{{ $k }}')" id="cell-{{ $k }}">
                                     <div id="view-{{ $k }}"><span id="value-{{ $k }}">{{ $v }}</span></div>
+                            
                                     <div id="edit-{{ $k }}" style="display: none; position: relative;">
-                                        <input type="text" name="value[{{ $k }}]" id="input-{{ $k }}"
-                                               class="form-control pe-5" value="{{ $v }}"
-                                               onkeydown="submitOnEnter(event)">
-                                        <button type="submit" class="btn btn-primary"
-                                                style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%);">
-                                            {{ __('update') }}
-                                        </button>
+                                        <form method="POST" action="{{ route('update_key') }}">
+                                            @csrf
+                                            <input type="hidden" name="key" value="{{ $key }}">
+                                            <input type="text" name="value[{{ $k }}]" id="input-{{ $k }}" class="form-control pe-5" value="{{ $v }}" onkeydown="submitOnEnter(event)">
+                                            <button type="submit" class="btn btn-primary" style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%);">
+                                                {{ __('update') }}
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
+                            
                                 <td class="text-center">
                                     <form method="POST" action="{{ route('delete_subkey') }}">
                                         @csrf
@@ -69,7 +72,8 @@
                                         <input type="hidden" name="sub_key" value="{{ $k }}">
                                         <input type="hidden" name="sub_value" value="{{ $v }}">
                                         <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('{{ __('ask_delete') }}')">{{ __('delete') }}</button>
+                                            onclick="return confirm('{{ __('ask_delete') }}')">{{ __('delete') }}
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -78,10 +82,7 @@
                 </table>
             </form>
 
-            <!-- Кнопка добавить -->
-            <button type="button" class="btn btn-sm btn-outline-primary"
-                    style="position: absolute; right: 0; bottom: -45px;"
-                    onclick="addField()">
+            <button type="button" class="btn btn-sm btn-outline-primary" style="position: absolute; right: 0; bottom: -45px;" onclick="addField()">
                 + {{ __('add_field') }}
             </button>
         </div>

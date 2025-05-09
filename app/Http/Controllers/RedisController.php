@@ -63,26 +63,7 @@ class RedisController extends Controller
             return redirect()->route('home')->with('error', __('have_no_key'));
         }
 
-        $type = Redis::type($key);
-
-        if ($type === 1) {
-            Redis::set($key, $value);
-
-        } elseif (in_array($type, [2, 3, 4, 5]) && is_array($value)) {
-            Redis::del($key); 
-
-            foreach ($value as $k => $v) {
-                if ($type === 2) {
-                    Redis::rpush($key, $v);
-                } elseif ($type === 3) {
-                    Redis::sadd($key, $v);
-                } elseif ($type === 4) { 
-                    Redis::zadd($key, 0, $v);
-                } elseif ($type === 5) { 
-                    Redis::hset($key, $k, $v);
-                }
-            }
-        }
+        $this->redis->update_key($key, $value);
 
         return redirect()->back()->with('success', __('key_is_update'));
     }

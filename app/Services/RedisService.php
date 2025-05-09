@@ -80,54 +80,65 @@ class RedisService {
         return Redis::del($key);
     }
 
-    public function delete_subkey($key, $type, $subvalue, $subKey) {
-        switch ($type) {
-            case 3:
-                $list = Redis::lrange($key, 0, -1);
-            
-                if (isset($list[$subKey])) {
-                    unset($list[$subKey]);
-                    Redis::del($key);
-                    foreach (array_values($list) as $item) {
-                        Redis::rpush($key, $item);
-                    }
-                }
-                break;
-
-            case 2:
-                Redis::srem($key, $subvalue);
-                break;
-
-            case 4:
-                Redis::zrem($key, $subKey);
-                break;
-
-            case 5: 
-                Redis::hdel($key, $subKey);
-                break;
-        }
-    }
-
     public function add_subkey($type, $key, $new_key, $new_value) {
-        switch ($type) {
-            case 3: 
-                $a = Redis::rpush($key, $new_value);
-                break;
-
-            case 2: 
-                Redis::sadd($key, $new_value);
-                break;
-
-            case 4:
-                Redis::zadd($key, 0, $new_value);
-                break;
-
-            case 5:
-                Redis::hset($key, $new_key, $new_value);
-                break;
-
-            default:
-                return redirect()->back()->with('error', 'Тип ключа не поддерживается для добавления');
+        if ($type === 2) {
+            Redis::sadd($key, $new_value);
+        } 
+        elseif ($type == 3) {
+            Redis::rpush($key, $new_value);
+        } 
+        elseif ($type == 4) {
+            Redis::zadd($key, 0, $new_value);
+        } 
+        elseif ($type == 5) {
+            Redis::hset($key, $new_key, $new_value);
         }
     }
+
+    
+    public function delete_subkey($key, $type, $sub_value, $sub_key) {
+        if ($type === 2) {
+            Redis::srem($key, $sub_value);
+        } 
+        elseif ($type === 3) {
+            $list = $this->get_by_key($key)['value'];
+            unset($list[$sub_key]);
+            $this->delete_key($key);
+            $this->create_key('list', $key, json_encode($list));
+        } 
+        elseif ($type === 4) {
+            Redis::zrem($key, $sub_key);
+        }
+        elseif ($type === 5) {
+            Redis::hdel($key, $sub_key);
+        }
+    }
+
+    public function update_key($key, $value) {
+        $type = Redis::type($key);
+
+        if ($type === 1) {
+            Redis::set($key, $value);
+        } 
+        elseif (is_array($value) && in_array($type, [2, 3, 4, 5])) {
+            Redis::del($key); 
+            foreach ($value as $k => $v) {
+                if ($type === 3) {
+                    Redis::rpush($key, $v);
+                }
+                 elseif ($type === 2) {
+                    Redis::sadd($key, $v);
+                } 
+                elseif ($type === 4) { 
+                    Redis::zadd($key, 0, $v);
+                } 
+                elseif ($type === 5) { 
+                    Redis::hset($key, $k, $v);
+                }
+            }
+        }
+    }
+
+
+
 }
