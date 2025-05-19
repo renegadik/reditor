@@ -25,7 +25,15 @@
         </div>
 
         <div id="string-edit" style="display: none; position: relative;" class="mt-3">
-            <textarea name="value" id="string-input" class="form-control pe-5" style="min-height: 150px;" onkeydown="submitOnEnter(event)">{{ is_array(json_decode($value, true)) ? json_encode(json_decode($value, true), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $value }}</textarea>
+            <textarea name="value" id="string-input"
+                    class="form-control pe-5"
+                    style="min-height: 150px; overflow:hidden;"
+                    onkeydown="submitOnEnter(event)"
+                    oninput="autoResize(this)"
+                    onfocus="autoResize(this)">
+                {{ is_array(json_decode($value, true)) ? json_encode(json_decode($value, true), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $value }}
+            </textarea>
+
             <button type="submit" class="btn btn-primary" style="position: absolute; right: 0px; top: 0;">
                 {{ __('save_button') }}
             </button>
@@ -99,7 +107,9 @@
             const input = document.getElementById('string-input');
             input.focus();
             input.setSelectionRange(input.value.length, input.value.length);
+            autoResize(input);
         }
+
 
         function editCell(key) {
             document.getElementById('view-' + key).style.display = 'none';
@@ -116,6 +126,12 @@
                 event.target.form.submit();
             }
         }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
 
         function addField() {
             const tbody = document.getElementById('data-table-body');
