@@ -25,7 +25,9 @@
                         <td>{{ Str::limit($key['value'], 30) }}</td>
                         <td>{{ $key['ttl'] }}</td>
                         <td>
-                            <a href="{{ route('show', ['key' => urlencode($key['key'])]) }}" class="btn btn-sm btn-primary">{{ __('open_button') }}</a>
+                            @if(!empty($key['key']))
+                                <a href="{{ route('show', ['key' => urlencode($key['key'])]) }}" class="btn btn-sm btn-primary">{{ __('open_button') }}</a>
+                            @endif
                             <form method="POST" action="{{ route('delete') }}" class="d-inline">
                                 @csrf
                                 <input type="hidden" name="key" value="{{ $key['key'] }}">
