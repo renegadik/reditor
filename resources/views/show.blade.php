@@ -21,7 +21,7 @@
         <input type="hidden" name="key" value="{{ $key }}">
 
         <div id="string-view" ondblclick="editString()" class="border p-3 rounded bg-white cursor-pointer" style="white-space: pre-wrap;">
-            <span id="string-value">{{ $value }}</span>
+            <span id="string-value" style="display: block; white-space: pre-wrap;">{{ is_array(json_decode($value, true)) ? json_encode(json_decode($value, true), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $value }}</span>
         </div>
 
         <div id="string-edit" style="display: none; position: relative;" class="mt-3">

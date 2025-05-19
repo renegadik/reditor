@@ -37,7 +37,6 @@ class RedisService {
             'value' => $value,
             'ttl' => $ttl == -1 ? __('infinity') : $ttl,
         ];
-
         return $data;
     }
 
